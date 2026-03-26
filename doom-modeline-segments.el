@@ -2839,11 +2839,21 @@ read the individual functions documentation for more."
   "Check if `rcirc' is in use."
   (bound-and-true-p rcirc-track-minor-mode))
 
+(defun doom-modeline--circe-mention-buffers ()
+  "Return filtered Circe buffers."
+  (if doom-modeline-irc-priority-only
+      (seq-filter
+       (lambda (buf)
+         (memq (get-text-property 0 'face buf)
+               tracking-faces-priorities))
+       tracking-buffers)
+    tracking-buffers))
+
 (defun doom-modeline--get-buffers ()
   "Gets the buffers that have activity."
   (cond
    ((doom-modeline--circe-p)
-    tracking-buffers)
+    (doom-modeline--circe-mention-buffers))
    ((doom-modeline--erc-p)
     (mapcar (lambda (l)
               (buffer-name (car l)))
